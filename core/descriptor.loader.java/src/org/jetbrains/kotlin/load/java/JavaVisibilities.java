@@ -59,7 +59,7 @@ public class JavaVisibilities {
 
         @NotNull
         @Override
-        public EffectiveVisibility effectiveVisibility(@Nullable ClassDescriptor classDescriptor, boolean checkPublishedApi) {
+        public EffectiveVisibility effectiveVisibility(@Nullable DeclarationDescriptor classDescriptor, boolean checkPublishedApi) {
             return EffectiveVisibility.PackagePrivate.INSTANCE;
         }
     };
