@@ -17,6 +17,8 @@
 package org.jetbrains.kotlin.idea.caches.resolve
 
 import com.intellij.openapi.roots.DependencyScope
+import org.jetbrains.kotlin.config.JvmTarget
+import org.jetbrains.kotlin.config.TargetPlatformKind
 
 class MultiModuleHighlightingTest : AbstractMultiModuleHighlightingTest() {
     fun testVisibility() {
@@ -55,6 +57,59 @@ class MultiModuleHighlightingTest : AbstractMultiModuleHighlightingTest() {
         module3.addDependency(module1, dependencyScope = DependencyScope.TEST)
         module3.addDependency(module2, dependencyScope = DependencyScope.TEST)
         module2.addDependency(module1, dependencyScope = DependencyScope.COMPILE)
+
+        checkHighlightingInAllFiles()
+    }
+
+    fun testPlatform1() {
+        val header = module("header")
+        header.setPlatformKind(TargetPlatformKind.Default)
+
+        val jvm = module("jvm")
+        jvm.setPlatformKind(TargetPlatformKind.Jvm[JvmTarget.JVM_1_8])
+        jvm.enableMultiPlatform()
+        jvm.addDependency(header)
+
+        checkHighlightingInAllFiles()
+    }
+
+    fun testPlatform2() {
+        val header = module("header")
+        header.setPlatformKind(TargetPlatformKind.Default)
+
+        val jvm = module("jvm")
+        jvm.setPlatformKind(TargetPlatformKind.Jvm[JvmTarget.JVM_1_8])
+        jvm.enableMultiPlatform()
+        jvm.addDependency(header)
+
+        checkHighlightingInAllFiles()
+    }
+
+    fun testPlatform3() {
+        val header = module("header")
+        header.setPlatformKind(TargetPlatformKind.Default)
+
+        val jvm = module("jvm")
+        jvm.setPlatformKind(TargetPlatformKind.Jvm[JvmTarget.JVM_1_8])
+        jvm.enableMultiPlatform()
+        jvm.addDependency(header)
+
+        val js = module("js")
+        js.setPlatformKind(TargetPlatformKind.JavaScript)
+        js.enableMultiPlatform()
+        js.addDependency(header)
+
+        checkHighlightingInAllFiles()
+    }
+
+    fun testPlatform4() {
+        val header = module("header")
+        header.setPlatformKind(TargetPlatformKind.Default)
+
+        val jvm = module("jvm")
+        jvm.setPlatformKind(TargetPlatformKind.Jvm[JvmTarget.JVM_1_8])
+        jvm.enableMultiPlatform()
+        jvm.addDependency(header)
 
         checkHighlightingInAllFiles()
     }
