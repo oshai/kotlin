@@ -92,7 +92,8 @@ class PlatformImplDeclarationChecker(val moduleToCheck: ModuleDescriptor? = null
             assert(compatibility.keys.all { it is Incompatible })
             @Suppress("UNCHECKED_CAST")
             val incompatibility = compatibility as Map<Incompatible, Collection<MemberDescriptor>>
-            diagnosticHolder.report(Errors.PLATFORM_DECLARATION_WITHOUT_DEFINITION.on(reportOn, descriptor, incompatibility))
+            diagnosticHolder.report(Errors.PLATFORM_DECLARATION_WITHOUT_DEFINITION.on(
+                    reportOn, descriptor, moduleToCheck ?: descriptor.module, incompatibility))
         }
     }
 

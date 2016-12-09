@@ -270,7 +270,8 @@ public class DefaultErrorMessages {
         MAP.put(IMPL_TYPE_ALIAS_WITH_USE_SITE_VARIANCE, "Right-hand side of 'impl' type alias cannot contain use-site variance or star projections");
         MAP.put(IMPL_TYPE_ALIAS_WITH_COMPLEX_SUBSTITUTION, "Type arguments in the right-hand side of 'impl' type alias should be its type parameters in the same order, e.g. 'impl typealias Foo<A, B> = Bar<A, B>'");
 
-        MAP.put(PLATFORM_DECLARATION_WITHOUT_DEFINITION, "No definition is found for platform declaration ''{0}''{1}", NAME, PlatformIncompatibilityDiagnosticRenderer.INSTANCE);
+        MAP.put(PLATFORM_DECLARATION_WITHOUT_DEFINITION, "Declaration ''{0}''{2} has no definition in platform module {1}", NAME,
+                PLATFORM, PlatformIncompatibilityDiagnosticRenderer.INSTANCE);
         MAP.put(PLATFORM_DEFINITION_WITHOUT_DECLARATION, "Modifier 'impl' is only applicable to members that are initially declared in platform-independent code");
 
         MAP.put(PROJECTION_ON_NON_CLASS_TYPE_ARGUMENT, "Projections are not allowed on type arguments of functions and properties");

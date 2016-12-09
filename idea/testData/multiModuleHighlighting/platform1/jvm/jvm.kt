@@ -2,7 +2,7 @@
 
 }
 
-platform class <error descr="[PLATFORM_DECLARATION_WITHOUT_DEFINITION] No definition is found for platform declaration 'His'">His</error> {
+platform class <error descr="[PLATFORM_DECLARATION_WITHOUT_DEFINITION] Declaration 'His' has no definition in platform module for JVM">His</error> {
 
 }
 
