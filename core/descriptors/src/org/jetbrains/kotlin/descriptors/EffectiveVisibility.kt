@@ -233,12 +233,11 @@ private fun lowerBound(first: EffectiveVisibility, args: List<EffectiveVisibilit
 private fun lowerBound(args: List<EffectiveVisibility>) =
         if (args.isEmpty()) Public else lowerBound(args.first(), args.subList(1, args.size))
 
-private fun Visibility.forVisibility(descriptor: DeclarationDescriptor? = null, checkPublishedApi: Boolean = false): EffectiveVisibility =
+private fun Visibility.forVisibility(descriptor: DeclarationDescriptor, checkPublishedApi: Boolean = false): EffectiveVisibility =
         when (this) {
             Visibilities.PRIVATE, Visibilities.PRIVATE_TO_THIS, Visibilities.INVISIBLE_FAKE -> Private
-            Visibilities.PROTECTED -> Protected(descriptor?.containingDeclaration as? ClassDescriptor)
-            Visibilities.INTERNAL -> if (descriptor == null ||
-                                         !checkPublishedApi ||
+            Visibilities.PROTECTED -> Protected(descriptor.containingDeclaration as? ClassDescriptor)
+            Visibilities.INTERNAL -> if (!checkPublishedApi ||
                                          !descriptor.annotations.hasAnnotation(KotlinBuiltIns.FQ_NAMES.publishedApi)) Internal else Public
             Visibilities.PUBLIC -> Public
             Visibilities.LOCAL -> Local
@@ -246,7 +245,7 @@ private fun Visibility.forVisibility(descriptor: DeclarationDescriptor? = null, 
             else -> throw AssertionError("Visibility $name is not allowed in forVisibility")
         }
 
-fun effectiveVisibility(visibility: Visibility, descriptor: DeclarationDescriptor?, checkPublishedApi: Boolean = false) =
+fun effectiveVisibility(visibility: Visibility, descriptor: DeclarationDescriptor, checkPublishedApi: Boolean = false) =
         visibility.forVisibility(descriptor, checkPublishedApi)
 
 enum class RelationToType(val description: String) {
