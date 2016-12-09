@@ -16,8 +16,6 @@
 
 package kotlin.jvm.internal
 
-import kotlin.coroutines.*
-
 private const val INTERCEPT_BIT_SET = 1 shl 31
 private const val INTERCEPT_BIT_CLEAR = INTERCEPT_BIT_SET.inv()
 
@@ -71,7 +69,7 @@ abstract class CoroutineImpl : RestrictedCoroutineImpl, InterceptableContinuatio
 @SinceKotlin("1.1")
 abstract class RestrictedCoroutineImpl : Lambda, Continuation<Any?> {
     @JvmField
-    protected val resultContinuation: Continuation<Any?>?
+    protected var resultContinuation: Continuation<Any?>?
 
     // label == -1 when coroutine cannot be started (it is just a factory object) or has already finished execution
     // label == 0 in initial part of the coroutine
