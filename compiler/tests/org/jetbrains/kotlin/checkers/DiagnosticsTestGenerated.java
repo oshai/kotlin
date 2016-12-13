@@ -12810,6 +12810,12 @@ public class DiagnosticsTestGenerated extends AbstractDiagnosticsTest {
                     doTest(fileName);
                 }
 
+                @TestMetadata("implOpenClass.kt")
+                public void testImplOpenClass() throws Exception {
+                    String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/multiplatform/headerClass/implOpenClass.kt");
+                    doTest(fileName);
+                }
+
                 @TestMetadata("simpleHeaderClass.kt")
                 public void testSimpleHeaderClass() throws Exception {
                     String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/multiplatform/headerClass/simpleHeaderClass.kt");
