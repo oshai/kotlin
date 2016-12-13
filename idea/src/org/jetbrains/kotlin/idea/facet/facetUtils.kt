@@ -18,15 +18,12 @@ package org.jetbrains.kotlin.idea.facet
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.projectRoots.JavaSdk
-import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.LibraryOrderEntry
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ModuleRootModel
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.util.text.VersionComparatorUtil
 import org.jetbrains.kotlin.cli.common.arguments.copyBean
-import org.jetbrains.kotlin.config.JvmTarget
 import org.jetbrains.kotlin.config.KotlinFacetSettings
 import org.jetbrains.kotlin.config.LanguageVersion
 import org.jetbrains.kotlin.config.TargetPlatformKind
@@ -100,23 +97,31 @@ internal fun getLibraryLanguageLevel(
 fun KotlinFacetSettings.initializeIfNeeded(module: Module, rootModel: ModuleRootModel?) {
     val project = module.project
 
+    val commonArguments = KotlinCommonCompilerArgumentsHolder.getInstance(module.project).settings
+
     with(versionInfo) {
         if (targetPlatformKind == null) {
             targetPlatformKind = getDefaultTargetPlatform(module, rootModel)
         }
 
         if (languageLevel == null) {
-            languageLevel = getDefaultLanguageLevel(module)
+            languageLevel = (if (useProjectSettings) LanguageVersion.fromVersionString(commonArguments.languageVersion) else null)
+                            ?: getDefaultLanguageLevel(module)
         }
 
         if (apiLevel == null) {
-            apiLevel = languageLevel!!.coerceAtMost(getLibraryLanguageLevel(module, rootModel, targetPlatformKind!!))
+            apiLevel = if (useProjectSettings) {
+                LanguageVersion.fromVersionString(commonArguments.apiVersion) ?: languageLevel
+            }
+            else {
+                languageLevel!!.coerceAtMost(getLibraryLanguageLevel(module, rootModel, targetPlatformKind!!))
+            }
         }
     }
 
     with(compilerInfo) {
         if (commonCompilerArguments == null) {
-            commonCompilerArguments = copyBean(KotlinCommonCompilerArgumentsHolder.getInstance(project).settings)
+            commonCompilerArguments = copyBean(commonArguments)
         }
 
         if (compilerSettings == null) {
@@ -143,6 +148,7 @@ fun Module.getOrCreateFacet(modelsProvider: IdeModifiableModelsProvider): Kotlin
 
     val facet = with(KotlinFacetType.INSTANCE) { createFacet(this@getOrCreateFacet, defaultFacetName, createDefaultConfiguration(), null) }
     facetModel.addFacet(facet)
+    facet.configuration.settings.useProjectSettings = true
     return facet
 }
 

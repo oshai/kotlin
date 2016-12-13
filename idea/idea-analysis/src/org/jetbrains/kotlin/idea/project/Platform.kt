@@ -19,12 +19,15 @@ package org.jetbrains.kotlin.idea.project
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.sampullara.cli.Argument
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.cli.common.arguments.CommonCompilerArguments
 import org.jetbrains.kotlin.config.*
 import org.jetbrains.kotlin.idea.caches.resolve.getResolutionFacade
+import org.jetbrains.kotlin.idea.compiler.configuration.KotlinCommonCompilerArgumentsHolder
+import org.jetbrains.kotlin.idea.compiler.configuration.KotlinCompilerSettings
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.resolve.TargetPlatform
 
@@ -38,22 +41,48 @@ private val multiPlatformProjectsArg: String by lazy {
     "-" + CommonCompilerArguments::multiPlatform.annotations.filterIsInstance<Argument>().single().value
 }
 
+val Project.languageVersionSettings: LanguageVersionSettings
+    get() {
+        val arguments = KotlinCommonCompilerArgumentsHolder.getInstance(this).settings
+        val languageVersion = LanguageVersion.fromVersionString(arguments.languageVersion) ?: LanguageVersion.LATEST
+        val apiVersion = ApiVersion.createByLanguageVersion(LanguageVersion.fromVersionString(arguments.apiVersion) ?: languageVersion)
+        val extraLanguageFeatures = getExtraLanguageFeatures(
+                TargetPlatformKind.Default,
+                KotlinCompilerSettings.getInstance(this).settings
+        )
+        return LanguageVersionSettingsImpl(
+                languageVersion,
+                apiVersion,
+                extraLanguageFeatures
+        )
+    }
+
 val Module.languageVersionSettings: LanguageVersionSettings
     get() {
         val facetSettings = KotlinFacetSettingsProvider.getInstance(project).getSettings(this)
+        if (facetSettings.useProjectSettings) return project.languageVersionSettings
         val versionInfo = facetSettings.versionInfo
         val languageVersion = versionInfo.languageLevel ?: LanguageVersion.LATEST
         val apiVersion = versionInfo.apiLevel ?: languageVersion
 
-        val extraLanguageFeatures =
-                if (versionInfo.targetPlatformKind == TargetPlatformKind.Default ||
-                    // TODO: this is a dirty hack, parse arguments correctly here
-                    facetSettings.compilerInfo.compilerSettings?.additionalArguments?.contains(multiPlatformProjectsArg) == true)
-                    listOf(LanguageFeature.MultiPlatformProjects)
-                else emptyList()
+        val extraLanguageFeatures = getExtraLanguageFeatures(
+                versionInfo.targetPlatformKind ?: TargetPlatformKind.Default,
+                facetSettings.compilerInfo.compilerSettings
+        )
 
         return LanguageVersionSettingsImpl(languageVersion, ApiVersion.createByLanguageVersion(apiVersion), extraLanguageFeatures)
     }
+
+private fun getExtraLanguageFeatures(
+        targetPlatformKind: TargetPlatformKind<*>,
+        compilerSettings: CompilerSettings?
+): List<LanguageFeature> {
+    return if (targetPlatformKind == TargetPlatformKind.Default ||
+               // TODO: this is a dirty hack, parse arguments correctly here
+               compilerSettings?.additionalArguments?.contains(multiPlatformProjectsArg) == true)
+        listOf(LanguageFeature.MultiPlatformProjects)
+    else emptyList()
+}
 
 val KtElement.languageVersionSettings: LanguageVersionSettings
     get() {
