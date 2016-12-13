@@ -54,7 +54,6 @@ public val SUSPENDED: Any? = Any()
 @Retention(AnnotationRetention.BINARY)
 public annotation class Suspend
 
-
 /**
  * Classes and interfaces marked with this annotation are restricted when used as receivers for extension
  * `suspend` functions. These `suspend` extensions can only invoke other member or extension `suspend` functions on this parcitular
