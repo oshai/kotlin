@@ -1142,7 +1142,7 @@ public class DescriptorResolver {
                 /* lateInit = */ false,
                 /* isConst = */ false,
                 /* isHeader = */ false,
-                /* isImpl = */ false,
+                /* isImpl = */ modifierList != null && modifierList.hasModifier(KtTokens.IMPL_KEYWORD),
                 /* isExternal = */ false
         );
         propertyWrapper.setDescriptor(propertyDescriptor);
