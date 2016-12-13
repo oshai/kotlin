@@ -91,6 +91,7 @@ private val OVERRIDDEN_MARK: Icon = AllIcons.Gutter.OverridenMethod
 private val IMPLEMENTED_MARK: Icon = AllIcons.Gutter.ImplementedMethod
 
 private val SUBCLASSED_CLASS = MarkerType(
+        "SUBCLASSED_CLASS",
         { getPsiClass(it)?.let { MarkerType.getSubclassedClassTooltip(it) } },
         object : LineMarkerNavigator() {
             override fun browse(e: MouseEvent?, element: PsiElement?) {
@@ -99,7 +100,8 @@ private val SUBCLASSED_CLASS = MarkerType(
         })
 
 private val OVERRIDDEN_FUNCTION = MarkerType(
-        { getPsiMethod(it)?.let { getOverriddenMethodTooltip(it) } },
+        "OVERRIDDEN_FUNCTION",
+        { getPsiMethod(it)?.let(::getOverriddenMethodTooltip) },
         object : LineMarkerNavigator() {
             override fun browse(e: MouseEvent?, element: PsiElement?) {
                 getPsiMethod(element)?.let { navigateToOverriddenMethod(e, it) }
@@ -107,6 +109,7 @@ private val OVERRIDDEN_FUNCTION = MarkerType(
         })
 
 private val OVERRIDDEN_PROPERTY = MarkerType(
+        "OVERRIDDEN_PROPERTY",
         { it?.let { getOverriddenPropertyTooltip(it.parent as KtNamedDeclaration) } },
         object : LineMarkerNavigator() {
             override fun browse(e: MouseEvent?, element: PsiElement?) {
@@ -132,11 +135,12 @@ private fun collectSuperDeclarationMarkers(declaration: KtDeclaration, result: M
     // clearing the whole BindingTrace.
     val marker = LineMarkerInfo(
             declaration,
-            declaration.textOffset,
+            declaration.textRange,
             if (implements) IMPLEMENTING_MARK else OVERRIDING_MARK,
-            Pass.UPDATE_OVERRIDEN_MARKERS,
+            Pass.UPDATE_OVERRIDDEN_MARKERS,
             SuperDeclarationMarkerTooltip,
-            SuperDeclarationMarkerNavigationHandler()
+            SuperDeclarationMarkerNavigationHandler(),
+            GutterIconRenderer.Alignment.RIGHT
     )
 
     result.add(marker)
@@ -156,11 +160,12 @@ private fun collectInheritedClassMarker(element: KtClass, result: MutableCollect
 
     result.add(LineMarkerInfo(
             anchor,
-            anchor.textOffset,
+            anchor.textRange,
             if (isTrait) IMPLEMENTED_MARK else OVERRIDDEN_MARK,
-            Pass.UPDATE_OVERRIDEN_MARKERS,
+            Pass.UPDATE_OVERRIDDEN_MARKERS,
             SUBCLASSED_CLASS.tooltip,
-            SUBCLASSED_CLASS.navigationHandler
+            SUBCLASSED_CLASS.navigationHandler,
+            GutterIconRenderer.Alignment.RIGHT
     ))
 }
 
@@ -186,9 +191,9 @@ private fun collectOverriddenPropertyAccessors(properties: Collection<KtNamedDec
 
         result.add(LineMarkerInfo(
                 anchor,
-                anchor.textOffset,
+                anchor.textRange,
                 if (isImplemented(property)) IMPLEMENTED_MARK else OVERRIDDEN_MARK,
-                Pass.UPDATE_OVERRIDEN_MARKERS,
+                Pass.UPDATE_OVERRIDDEN_MARKERS,
                 OVERRIDDEN_PROPERTY.tooltip,
                 OVERRIDDEN_PROPERTY.navigationHandler,
                 GutterIconRenderer.Alignment.RIGHT
@@ -224,9 +229,9 @@ private fun collectOverriddenFunctions(functions: Collection<KtNamedFunction>, r
 
         result.add(LineMarkerInfo(
                 anchor,
-                anchor.textOffset,
+                anchor.textRange,
                 if (isImplemented(function)) IMPLEMENTED_MARK else OVERRIDDEN_MARK,
-                Pass.UPDATE_OVERRIDEN_MARKERS, OVERRIDDEN_FUNCTION.tooltip,
+                Pass.UPDATE_OVERRIDDEN_MARKERS, OVERRIDDEN_FUNCTION.tooltip,
                 OVERRIDDEN_FUNCTION.navigationHandler,
                 GutterIconRenderer.Alignment.RIGHT
         ))
