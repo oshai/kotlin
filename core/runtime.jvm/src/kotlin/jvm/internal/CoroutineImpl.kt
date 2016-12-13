@@ -36,13 +36,6 @@ abstract class CoroutineImpl : RestrictedCoroutineImpl, InterceptableContinuatio
         _resumeInterceptor = (resultContinuation as? InterceptableContinuation<*>)?.resumeInterceptor
     }
 
-    // coroutine factory implementation for unrestricted coroutines, it will implement Function1.invoke
-    // in the actual coroutine implementation
-    fun invoke(resultContinuation: Continuation<*>): Any? {
-        // create and run it until first suspension
-        return (doCreate(null, resultContinuation) as CoroutineImpl).doResume(Unit, null)
-    }
-
     override fun resume(data: Any?) {
         if (_resumeInterceptor != null) {
             if (label and INTERCEPT_BIT_SET == 0) {
@@ -87,18 +80,6 @@ abstract class RestrictedCoroutineImpl : Lambda, Continuation<Any?> {
         this.resultContinuation = resultContinuation
         label = 0
     }
-
-    // coroutine factory implementation for restricted coroutines, it will implement Function2.invoke
-    // in the actual restricted coroutine implementation
-    fun invoke(receiver: Any, resultContinuation: Continuation<*>): Any? {
-        // create and run it until first suspension
-        return (doCreate(receiver, resultContinuation) as RestrictedCoroutineImpl).doResume(Unit, null)
-    }
-
-    protected abstract fun doCreate(receiver: Any?, resultContinuation: Continuation<*>): Continuation<Unit>
-
-    internal fun doCreateInternal(receiver: Any?, resultContinuation: Continuation<*>) =
-            doCreate(receiver, resultContinuation)
 
     override fun resume(data: Any?) {
         try {
