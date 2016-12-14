@@ -46,8 +46,9 @@ public interface ResumeInterceptor {
 @Suppress("UNCHECKED_CAST")
 public fun <R, T> (@Suspend() (R.() -> T)).createCoroutine(
         receiver: R,
-        resultHandler: Continuation<T>
-): Continuation<Unit> = (this as (R, Continuation<T>) -> Continuation<Unit>).invoke(receiver, resultHandler)
+        resultHandler: Continuation<T>,
+        resumeInterceptor: ResumeInterceptor? = null
+): Continuation<Unit> = (this as (R, Continuation<T>) -> Continuation<Unit>).invoke(receiver, withInterceptor(resultHandler, resumeInterceptor))
 
 /**
  * Starts coroutine with receiver type [R] and result type [T].
@@ -58,9 +59,10 @@ public fun <R, T> (@Suspend() (R.() -> T)).createCoroutine(
 @Suppress("UNCHECKED_CAST")
 public fun <R, T> (@Suspend() (R.() -> T)).startCoroutine(
         receiver: R,
-        resultHandler: Continuation<T>
+        resultHandler: Continuation<T>,
+        resumeInterceptor: ResumeInterceptor? = null
 ) {
-    createCoroutine(receiver, resultHandler).resume(Unit)
+    createCoroutine(receiver, resultHandler, resumeInterceptor).resume(Unit)
 }
 
 /**

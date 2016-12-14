@@ -24,7 +24,6 @@ import org.jetbrains.kotlin.codegen.optimization.common.StrictBasicValue
 import org.jetbrains.kotlin.codegen.optimization.common.analyzeLiveness
 import org.jetbrains.kotlin.codegen.optimization.common.insnListOf
 import org.jetbrains.kotlin.codegen.optimization.common.removeEmptyCatchBlocks
-import org.jetbrains.kotlin.load.java.JvmAbi
 import org.jetbrains.kotlin.resolve.jvm.AsmTypes
 import org.jetbrains.kotlin.resolve.jvm.diagnostics.JvmDeclarationOrigin
 import org.jetbrains.kotlin.utils.sure
@@ -64,6 +63,8 @@ class CoroutineTransformerMethodVisitor(
 ) : TransformationMethodVisitor(delegate, access, name, desc, signature, exceptions) {
     override fun performTransformations(methodNode: MethodNode) {
         if (methodNode.visibleAnnotations?.none { it.desc == CONTINUATION_METHOD_ANNOTATION_DESC } != false) return
+
+        methodNode.desc = Type.getMethodDescriptor(AsmTypes.OBJECT_TYPE, *Type.getMethodType(methodNode.desc).argumentTypes)
         methodNode.visibleAnnotations.removeAll { it.desc == CONTINUATION_METHOD_ANNOTATION_DESC }
 
         val customCoroutineStartMarker = methodNode.instructions.toArray().filterIsInstance<MethodInsnNode>().firstOrNull {
@@ -119,17 +120,12 @@ class CoroutineTransformerMethodVisitor(
             // tableswitch(this.label)
             insertBefore(firstToInsertBefore,
                          insnListOf(
-                                 FieldInsnNode(
-                                         Opcodes.GETSTATIC,
-                                         AsmTypes.COROUTINES_SUSPEND.internalName,
-                                         JvmAbi.INSTANCE_FIELD,
-                                         AsmTypes.COROUTINES_SUSPEND.descriptor
-                                 ),
+                                 *withInstructionAdapter { loadSuspendMarker() }.toArray(),
                                  VarInsnNode(Opcodes.ASTORE, suspendMarkerVarIndex),
                                  VarInsnNode(Opcodes.ALOAD, 0),
                                  FieldInsnNode(
                                          Opcodes.GETFIELD,
-                                         AsmTypes.COROUTINE_IMPL.internalName,
+                                         AsmTypes.RESTRICTED_COROUTINE_IMPL.internalName,
                                          COROUTINE_LABEL_FIELD_NAME, Type.INT_TYPE.descriptor
                                  ),
                                  TableSwitchInsnNode(0,
@@ -338,7 +334,7 @@ class CoroutineTransformerMethodVisitor(
                                  VarInsnNode(Opcodes.ALOAD, 0),
                                  *withInstructionAdapter { iconst(id) }.toArray(),
                                  FieldInsnNode(
-                                         Opcodes.PUTFIELD, AsmTypes.COROUTINE_IMPL.internalName, COROUTINE_LABEL_FIELD_NAME,
+                                         Opcodes.PUTFIELD, AsmTypes.RESTRICTED_COROUTINE_IMPL.internalName, COROUTINE_LABEL_FIELD_NAME,
                                          Type.INT_TYPE.descriptor
                                  )
                          )
@@ -349,11 +345,12 @@ class CoroutineTransformerMethodVisitor(
 
             insert(suspension.tryCatchBlockEndLabelAfterSuspensionCall, withInstructionAdapter {
                 dup()
-                load(suspendMarkerVarIndex, AsmTypes.COROUTINES_SUSPEND)
+                load(suspendMarkerVarIndex, AsmTypes.OBJECT_TYPE)
                 ifacmpne(continuationLabelAfterLoadedResult.label)
 
                 // Exit
-                areturn(Type.VOID_TYPE)
+                loadSuspendMarker()
+                areturn(AsmTypes.OBJECT_TYPE)
                 // Mark place for continuation
                 visitLabel(continuationLabel.label)
             })

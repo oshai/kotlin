@@ -26,11 +26,6 @@ abstract class CoroutineImpl : RestrictedCoroutineImpl, InterceptableContinuatio
     override val resumeInterceptor: ResumeInterceptor?
         get() = _resumeInterceptor
 
-    // this constructor is used to create initial "factory" lambda object
-    constructor(arity: Int) : super(arity) {
-        _resumeInterceptor = null
-    }
-
     // this constructor is used to create a continuation instance for coroutine
     constructor(arity: Int, resultContinuation: Continuation<Any?>?) : super(arity, resultContinuation) {
         _resumeInterceptor = (resultContinuation as? InterceptableContinuation<*>)?.resumeInterceptor
@@ -69,16 +64,10 @@ abstract class RestrictedCoroutineImpl : Lambda, Continuation<Any?> {
     @JvmField
     protected var label: Int
 
-    // this constructor is used to create initial "factory" lambda object
-    constructor(arity: Int) : super(arity) {
-        resultContinuation = null
-        label = -1 // don't use this object as coroutine
-    }
-
     // this constructor is used to create a continuation instance for coroutine
     constructor(arity: Int, resultContinuation: Continuation<Any?>?) : super(arity) {
         this.resultContinuation = resultContinuation
-        label = 0
+        label = if (resultContinuation != null) 0 else -1
     }
 
     override fun resume(data: Any?) {
