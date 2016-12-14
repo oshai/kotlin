@@ -106,7 +106,7 @@ private fun translateCall(context: TranslationContext,
         } else {
             val dispatchReceiver = CallTranslator.translateGet(context, variableCall, null)
             if (explicitReceivers.extensionOrDispatchReceiver == null) {
-                translateFunctionCall(context, resolvedCall.functionCall, resolvedCall.variableCall, ExplicitReceivers(dispatchReceiver))
+                translateFunctionCall(context, resolvedCall.functionCall, resolvedCall, ExplicitReceivers(dispatchReceiver))
             }
             else {
                 translateFunctionCall(context, resolvedCall.functionCall, resolvedCall.variableCall,

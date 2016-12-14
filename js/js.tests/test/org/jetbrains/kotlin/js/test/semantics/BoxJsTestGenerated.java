@@ -3860,6 +3860,12 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
             doTest(fileName);
         }
 
+        @TestMetadata("operators.kt")
+        public void testOperators() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("js/js.translator/testData/box/inline/operators.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("params.kt")
         public void testParams() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("js/js.translator/testData/box/inline/params.kt");
@@ -4508,6 +4514,12 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
         @TestMetadata("method.kt")
         public void testMethod() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("js/js.translator/testData/box/inlineMultiModule/method.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("operators.kt")
+        public void testOperators() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("js/js.translator/testData/box/inlineMultiModule/operators.kt");
             doTest(fileName);
         }
 
