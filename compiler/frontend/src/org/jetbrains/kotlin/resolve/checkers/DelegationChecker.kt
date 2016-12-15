@@ -66,15 +66,15 @@ class DelegationChecker : SimpleDeclarationChecker {
             diagnosticHolder: DiagnosticSink
     ) {
         val reachableFromDelegated = findAllReachableDeclarations(delegatedDescriptor)
-        reachableFromDelegated.remove(delegatedDescriptor)
+        reachableFromDelegated.remove(delegatedDescriptor.original)
         val toRemove = linkedSetOf<CallableMemberDescriptor>()
         for (declaration in reachableFromDelegated) {
-            val reachable = findAllReachableDeclarations(declaration)
+            val reachable = findAllReachableDeclarations(declaration.original)
             reachable.remove(declaration)
             toRemove.addAll(reachable)
         }
         reachableFromDelegated.removeAll(toRemove)
-        reachableFromDelegated.remove(DescriptorUtils.unwrapFakeOverride(delegatedToDescriptor))
+        reachableFromDelegated.remove(DescriptorUtils.unwrapFakeOverride(delegatedToDescriptor).original)
 
         val nonAbstractReachable = reachableFromDelegated.filter { it.modality != Modality.ABSTRACT }
 
@@ -111,7 +111,7 @@ private fun findAllReachableDeclarations(memberDescriptor: CallableMemberDescrip
     val collector = object : DFS.NodeHandlerWithListResult<CallableMemberDescriptor, CallableMemberDescriptor>() {
         override fun afterChildren(current: CallableMemberDescriptor) {
             if (current.kind.isReal) {
-                result.add(current)
+                result.add(current.original)
             }
         }
     }
