@@ -29,7 +29,7 @@ import java.io.DataInput
 import java.io.DataOutput
 import java.util.*
 
-abstract class KotlinFileIndexBase<T>(classOfIndex: Class<T>) : ScalarIndexExtension<FqName>() {
+abstract class KotlinFileIndexBase<T>(classOfIndex: Class<out T>) : ScalarIndexExtension<FqName>() {
     val KEY: ID<FqName, Void> = ID.create(classOfIndex.canonicalName)
 
     private val KEY_DESCRIPTOR : KeyDescriptor<FqName> = object : KeyDescriptor<FqName> {

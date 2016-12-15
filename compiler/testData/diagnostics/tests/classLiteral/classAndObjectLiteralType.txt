@@ -1,0 +1,25 @@
+package
+
+public abstract class Base</*0*/ T : kotlin.Any> {
+    public constructor Base</*0*/ T : kotlin.Any>(/*0*/ klass: kotlin.reflect.KClass<out T>)
+    public final val klass: kotlin.reflect.KClass<out T>
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class DerivedClass : Base<DerivedClass> {
+    public constructor DerivedClass()
+    public final override /*1*/ /*fake_override*/ val klass: kotlin.reflect.KClass<out DerivedClass>
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class DerivedObject : Base<DerivedObject> {
+    public constructor DerivedObject()
+    public final override /*1*/ /*fake_override*/ val klass: kotlin.reflect.KClass<out DerivedObject>
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

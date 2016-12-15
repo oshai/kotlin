@@ -6,14 +6,14 @@ package test {
     public val a2: java.lang.Class<test.A.Companion>
     public val a3: java.lang.Class<test.A>
     public val a4: java.lang.Class<test.A>
-    public val a5: java.lang.Class<test.A.Companion>
+    public val a5: java.lang.Class<out test.A.Companion>
     public val e0: [ERROR : Type for E.javaClass]
     public val e1: java.lang.Class<test.E>
     public val e2: java.lang.Class<test.E>
     public val int0: java.lang.Class<kotlin.Int.Companion>
     public val int1: java.lang.Class<kotlin.Int>
     public val o0: java.lang.Class<test.O>
-    public val o1: java.lang.Class<test.O>
+    public val o1: java.lang.Class<out test.O>
     public val string0: java.lang.Class<kotlin.String.Companion>
     public val string1: java.lang.Class<kotlin.String>
 

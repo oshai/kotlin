@@ -9,7 +9,7 @@ class A
 object B
 
 val f: KClass<a.A> = A::class
-val g: KClass<a.B> = B::class
+val g: KClass<out a.B> = B::class
 
 // FILE: 2.kt
 
