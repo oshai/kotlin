@@ -13504,6 +13504,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
                 doTest(fileName);
             }
 
+            @TestMetadata("inlineReifiedFun.kt")
+            public void testInlineReifiedFun() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/reflection/mapping/inlineReifiedFun.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("mappedClassIsEqualToClassLiteral.kt")
             public void testMappedClassIsEqualToClassLiteral() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/reflection/mapping/mappedClassIsEqualToClassLiteral.kt");
