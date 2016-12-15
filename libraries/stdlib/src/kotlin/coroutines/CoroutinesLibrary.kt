@@ -1,4 +1,4 @@
-@file:kotlin.jvm.JvmName("ProcessKt")
+@file:kotlin.jvm.JvmName("CoroutinesKt")
 @file:kotlin.jvm.JvmVersion
 package kotlin.coroutines
 
@@ -141,8 +141,11 @@ internal class SafeContinuation<in T> @PublishedApi internal constructor(private
 
     @PublishedApi
     internal fun getResult(): Any? {
-        val result = this.result // atomic read
-        if (result == UNDECIDED && cas(UNDECIDED, SUSPENDED)) return SUSPENDED
+        var result = this.result // atomic read
+        if (result == UNDECIDED) {
+            if (cas(UNDECIDED, SUSPENDED)) return SUSPENDED
+            result = this.result // reread volatile var
+        }
         when (result) {
             RESUMED -> return SUSPENDED // already called continuation, indicate SUSPENDED upstream
             is Fail -> throw result.exception
