@@ -18,15 +18,12 @@ package org.jetbrains.kotlin.idea.facet
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.projectRoots.JavaSdk
-import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.LibraryOrderEntry
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ModuleRootModel
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.util.text.VersionComparatorUtil
 import org.jetbrains.kotlin.cli.common.arguments.copyBean
-import org.jetbrains.kotlin.config.JvmTarget
 import org.jetbrains.kotlin.config.KotlinFacetSettings
 import org.jetbrains.kotlin.config.LanguageVersion
 import org.jetbrains.kotlin.config.TargetPlatformKind
@@ -35,7 +32,6 @@ import org.jetbrains.kotlin.idea.compiler.configuration.KotlinCommonCompilerArgu
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinCompilerSettings
 import org.jetbrains.kotlin.idea.framework.JSLibraryStdPresentationProvider
 import org.jetbrains.kotlin.idea.framework.JavaRuntimePresentationProvider
-import org.jetbrains.kotlin.idea.framework.getLibraryProperties
 import org.jetbrains.kotlin.idea.versions.bundledRuntimeVersion
 
 private fun getRuntimeLibraryVersions(
@@ -130,8 +126,8 @@ fun KotlinFacetSettings.initializeIfNeeded(module: Module, rootModel: ModuleRoot
 val TargetPlatformKind<*>.mavenLibraryId: String
     get() {
         return when (this) {
-            is JVMPlatform -> "kotlin-stdlib"
-            is JSPlatform -> "kotlin-js-library"
+            is TargetPlatformKind.Jvm -> "kotlin-stdlib"
+            is TargetPlatformKind.JavaScript -> "kotlin-js-library"
             else -> error("Unexpected platform: $this")
         }
     }
