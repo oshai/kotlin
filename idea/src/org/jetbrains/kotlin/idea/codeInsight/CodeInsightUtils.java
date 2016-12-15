@@ -28,6 +28,8 @@ import com.intellij.util.text.CharArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.descriptors.ClassKind;
+import org.jetbrains.kotlin.descriptors.SimpleFunctionDescriptor;
+import org.jetbrains.kotlin.descriptors.impl.AnonymousFunctionDescriptor;
 import org.jetbrains.kotlin.idea.caches.resolve.ResolutionUtils;
 import org.jetbrains.kotlin.lexer.KtTokens;
 import org.jetbrains.kotlin.psi.*;
@@ -44,6 +46,9 @@ import java.util.List;
 import static org.jetbrains.kotlin.builtins.KotlinBuiltIns.*;
 
 public class CodeInsightUtils {
+
+    private CodeInsightUtils() {
+    }
 
     @Nullable
     public static PsiElement findElement(
@@ -108,13 +113,14 @@ public class CodeInsightUtils {
             if (((ClassQualifier) qualifier).getDescriptor().getKind() != ClassKind.OBJECT) return null;
         }
 
-        return expression;
-    }
+        if (expression instanceof KtLambdaExpression) {
+            SimpleFunctionDescriptor lambdaDescriptor =
+                    context.get(BindingContext.FUNCTION, ((KtLambdaExpression) expression).getFunctionLiteral());
+            if (lambdaDescriptor instanceof AnonymousFunctionDescriptor
+                && ((AnonymousFunctionDescriptor) lambdaDescriptor).isCoroutine()) return null;
+        }
 
-    public enum ElementKind {
-        EXPRESSION,
-        TYPE_ELEMENT,
-        TYPE_CONSTRUCTOR
+        return expression;
     }
 
     @NotNull
@@ -296,9 +302,6 @@ public class CodeInsightUtils {
         CommonRefactoringUtil.showErrorHint(project, editor, message, title, helpId);
     }
 
-    private CodeInsightUtils() {
-    }
-
     @Nullable
     public static Integer getStartLineOffset(@NotNull PsiFile file, int line) {
         Document document = PsiDocumentManager.getInstance(file.getProject()).getDocument(file);
@@ -358,5 +361,11 @@ public class CodeInsightUtils {
         while(true);
 
         return lastElementOfType;
+    }
+
+    public enum ElementKind {
+        EXPRESSION,
+        TYPE_ELEMENT,
+        TYPE_CONSTRUCTOR
     }
 }

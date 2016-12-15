@@ -28,6 +28,7 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.components.JBList
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
+import org.jetbrains.kotlin.descriptors.impl.AnonymousFunctionDescriptor
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.codeInsight.CodeInsightUtils
 import org.jetbrains.kotlin.idea.refactoring.introduce.findExpressionOrStringFragment
@@ -35,6 +36,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getNextSiblingIgnoringWhitespaceAndComments
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfTypeAndBranch
 import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
+import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.lazy.BodyResolveMode
 import java.awt.Component
 import java.lang.RuntimeException
@@ -139,9 +141,17 @@ fun getSmartSelectSuggestions(
                 }
                 if (addElement) {
                     val bindingContext = element.analyze(BodyResolveMode.FULL)
+
                     val expressionType = bindingContext.getType(element)
                     if (expressionType == null || KotlinBuiltIns.isUnit(expressionType)) {
                         addElement = false
+                    }
+
+                    if (element is KtLambdaExpression) {
+                        val lambdaDescriptor = bindingContext[BindingContext.FUNCTION, element.functionLiteral]
+                        if (lambdaDescriptor is AnonymousFunctionDescriptor && lambdaDescriptor.isCoroutine) {
+                            addElement = false
+                        }
                     }
                 }
             }

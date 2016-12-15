@@ -42,6 +42,12 @@ public class SmartSelectionTestGenerated extends AbstractSmartSelectionTest {
         doTestSmartSelection(fileName);
     }
 
+    @TestMetadata("coroutineLambda.kt")
+    public void testCoroutineLambda() throws Exception {
+        String fileName = KotlinTestUtils.navigationMetadata("idea/testData/smartSelection/coroutineLambda.kt");
+        doTestSmartSelection(fileName);
+    }
+
     @TestMetadata("labelledStatement.kt")
     public void testLabelledStatement() throws Exception {
         String fileName = KotlinTestUtils.navigationMetadata("idea/testData/smartSelection/labelledStatement.kt");

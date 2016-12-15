@@ -74,6 +74,18 @@ public class ExtractionTestGenerated extends AbstractExtractionTest {
             doIntroduceVariableTest(fileName);
         }
 
+        @TestMetadata("coroutineLambdaNoSelection.kt")
+        public void testCoroutineLambdaNoSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceVariable/coroutineLambdaNoSelection.kt");
+            doIntroduceVariableTest(fileName);
+        }
+
+        @TestMetadata("coroutineLambdaWithSelection.kt")
+        public void testCoroutineLambdaWithSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceVariable/coroutineLambdaWithSelection.kt");
+            doIntroduceVariableTest(fileName);
+        }
+
         @TestMetadata("DelegatorByExpressionInDelegate.kt")
         public void testDelegatorByExpressionInDelegate() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceVariable/DelegatorByExpressionInDelegate.kt");
@@ -889,6 +901,18 @@ public class ExtractionTestGenerated extends AbstractExtractionTest {
             @TestMetadata("convertInfixExpression.kt")
             public void testConvertInfixExpression() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/extractFunction/basic/convertInfixExpression.kt");
+                doExtractFunctionTest(fileName);
+            }
+
+            @TestMetadata("coroutineLambdaNoSelection.kt")
+            public void testCoroutineLambdaNoSelection() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/extractFunction/basic/coroutineLambdaNoSelection.kt");
+                doExtractFunctionTest(fileName);
+            }
+
+            @TestMetadata("coroutineLambdaWithSelection.kt")
+            public void testCoroutineLambdaWithSelection() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/extractFunction/basic/coroutineLambdaWithSelection.kt");
                 doExtractFunctionTest(fileName);
             }
 
@@ -2999,6 +3023,18 @@ public class ExtractionTestGenerated extends AbstractExtractionTest {
             KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("idea/testData/refactoring/introduceProperty"), Pattern.compile("^(.+)\\.(kt|kts)$"), TargetBackend.ANY, true);
         }
 
+        @TestMetadata("coroutineLambdaNoSelection.kt")
+        public void testCoroutineLambdaNoSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceProperty/coroutineLambdaNoSelection.kt");
+            doIntroducePropertyTest(fileName);
+        }
+
+        @TestMetadata("coroutineLambdaWithSelection.kt")
+        public void testCoroutineLambdaWithSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceProperty/coroutineLambdaWithSelection.kt");
+            doIntroducePropertyTest(fileName);
+        }
+
         @TestMetadata("extractExtensionWithInitializer.kt")
         public void testExtractExtensionWithInitializer() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceProperty/extractExtensionWithInitializer.kt");
@@ -3410,6 +3446,18 @@ public class ExtractionTestGenerated extends AbstractExtractionTest {
             doIntroduceSimpleParameterTest(fileName);
         }
 
+        @TestMetadata("coroutineLambdaNoSelection.kt")
+        public void testCoroutineLambdaNoSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceParameter/coroutineLambdaNoSelection.kt");
+            doIntroduceSimpleParameterTest(fileName);
+        }
+
+        @TestMetadata("coroutineLambdaWithSelection.kt")
+        public void testCoroutineLambdaWithSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceParameter/coroutineLambdaWithSelection.kt");
+            doIntroduceSimpleParameterTest(fileName);
+        }
+
         @TestMetadata("defaultValueInParens.kt")
         public void testDefaultValueInParens() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceParameter/defaultValueInParens.kt");
@@ -3813,6 +3861,18 @@ public class ExtractionTestGenerated extends AbstractExtractionTest {
     public static class IntroduceLambdaParameter extends AbstractExtractionTest {
         public void testAllFilesPresentInIntroduceLambdaParameter() throws Exception {
             KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("idea/testData/refactoring/introduceLambdaParameter"), Pattern.compile("^(.+)\\.(kt|kts)$"), TargetBackend.ANY, true);
+        }
+
+        @TestMetadata("coroutineLambdaNoSelection.kt")
+        public void testCoroutineLambdaNoSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceLambdaParameter/coroutineLambdaNoSelection.kt");
+            doIntroduceLambdaParameterTest(fileName);
+        }
+
+        @TestMetadata("coroutineLambdaWithSelection.kt")
+        public void testCoroutineLambdaWithSelection() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("idea/testData/refactoring/introduceLambdaParameter/coroutineLambdaWithSelection.kt");
+            doIntroduceLambdaParameterTest(fileName);
         }
 
         @TestMetadata("lambdaArgument.kt")
