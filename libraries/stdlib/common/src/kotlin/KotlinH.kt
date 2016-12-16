@@ -40,6 +40,7 @@ header interface Comparator<T> {
     fun compare(a: T, b: T): Int
 }
 
+header inline fun <T> Comparator(crossinline comparison: (T, T) -> Int): Comparator<T>
 
 // From kotlin.kt
 
@@ -65,3 +66,17 @@ header annotation class Volatile
 inline header fun <R> synchronized(lock: Any, crossinline block: () -> R): R
 
 
+public header fun <T> lazy(initializer: () -> T): Lazy<T>
+
+/**
+ * Creates a new instance of the [Lazy] that uses the specified initialization function [initializer].
+ *
+ * The [mode] parameter is ignored. */
+public header fun <T> lazy(mode: LazyThreadSafetyMode, initializer: () -> T): Lazy<T>
+
+/**
+ * Creates a new instance of the [Lazy] that uses the specified initialization function [initializer].
+ *
+ * The [lock] parameter is ignored.
+ */
+public header fun <T> lazy(lock: Any?, initializer: () -> T): Lazy<T>

@@ -70,6 +70,18 @@ internal header fun String.nativeLastIndexOf(str: String, fromIndex: Int): Int
 internal header fun String.nativeStartsWith(s: String, position: Int): Boolean
 internal header fun String.nativeEndsWith(s: String): Boolean
 
+
+public header fun String.substring(startIndex: Int): String
+public header fun String.substring(startIndex: Int, endIndex: Int): String
+
+
+public header inline fun String.toUpperCase(): String
+public header inline fun String.toLowerCase(): String
+public header inline fun String.capitalize(): String
+public header inline fun String.decapitalize(): String
+public header fun CharSequence.repeat(n: Int): String
+
+
 // From stringsCode.kt
 
 internal inline header fun String.nativeIndexOf(ch: Char, fromIndex: Int): Int
